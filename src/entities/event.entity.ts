@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Workshop } from './workshop.entity';
 
 @Entity('events')
 export class Event {
@@ -13,4 +20,7 @@ export class Event {
 
   @Column({ type: 'datetime' })
   updated_at: string;
+
+  @OneToMany(() => Workshop, (workshop) => workshop.event)
+  workshops: Workshop[];
 }

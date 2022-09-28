@@ -99,9 +99,18 @@ export class EventController {
      */
 
   @Get('events')
-  getEventsWithWorkshops() {
+  async getEventsWithWorkshops() {
     //Implement in coding task 1
-    return [];
+    const events = await this.eventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.workshops', 'workshop')
+      .orderBy({
+        'event.id': 'ASC',
+        'workshop.id': 'ASC',
+      })
+      .getMany();
+
+    return events;
   }
 
   /*
@@ -177,8 +186,21 @@ export class EventController {
      */
 
   @Get('futureevents')
-  getFutureEventWithWorkshops() {
+  async getFutureEventWithWorkshops() {
     //implement in coding task2
-    return [];
+    const events = await this.eventRepository
+      .createQueryBuilder('event')
+      .innerJoinAndSelect(
+        'event.workshops',
+        'workshop',
+        `workshop.start > :today`,
+        { today: new Date() },
+      )
+      .orderBy({
+        'event.id': 'ASC',
+        'workshop.id': 'ASC',
+      })
+      .getMany();
+    return events;
   }
 }
